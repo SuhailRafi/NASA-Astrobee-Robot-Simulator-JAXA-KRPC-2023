@@ -1,0 +1,11 @@
+@startuml
+
+title HLP Freeflyer Nodes Nodelet Managers
+
+!define SHOW_HLP true
+!define SHOW_ALL_TYPES true
+!define SHOW_MANAGERS true
+
+!include "nodes.puml"
+
+@enduml

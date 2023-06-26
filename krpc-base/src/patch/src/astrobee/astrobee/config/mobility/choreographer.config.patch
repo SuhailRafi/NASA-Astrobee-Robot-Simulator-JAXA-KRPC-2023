@@ -1,0 +1,11 @@
+--- ./src/astrobee/astrobee/config/mobility/choreographer.config	2021-03-22 18:12:44.094401327 +0900
++++ ./src/astrobee/astrobee/config/mobility/choreographer.config.new	2021-03-22 18:12:44.094401327 +0900
+@@ -154,7 +154,7 @@ parameters = {
+     -- are close to our current pose. In this case we don't have to plan or
+     -- even move, and we return an ALREADY_THERE success response.
+     id = "tolerance_pos", reconfigurable = true, type = "double",
+-    default = 0.05, min = 0.0, max = 1.0, unit = "m",
++    default = 0.049, min = 0.0, max = 1.0, unit = "m",
+     description = "Position tolerance for checking if we are already at pose"
+   },{
+     -- When a move request is made we need to check if the sequence of poses

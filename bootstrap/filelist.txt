@@ -1,0 +1,7 @@
+description/media/astrobee_iss/media/materials/textures/target1.png
+description/media/astrobee_iss/media/materials/textures/target2.png
+description/media/astrobee_iss/media/materials/textures/target3.png
+description/media/astrobee_iss/media/materials/textures/target4.png
+description/media/astrobee_iss/media/materials/textures/target5.png
+description/media/astrobee_iss/media/materials/textures/target6.png
+description/media/astrobee_iss/media/materials/textures/qr.png

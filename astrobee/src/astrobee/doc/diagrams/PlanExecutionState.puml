@@ -1,0 +1,13 @@
+@startuml
+
+skinparam sameStateWidth true
+
+title Astrobee PlanExecution State (Executive)
+
+[*] -> Idle
+Idle --> Paused : set_plan
+Paused -> Executing : run_plan
+Executing --> Idle : plan_completed
+Executing -> Paused : pause_plan
+
+@enduml

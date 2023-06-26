@@ -1,0 +1,64 @@
+Index: src/gds_simulator.py
+===================================================================
+--- src.orig/gds_simulator.py
++++ src/gds_simulator.py
+@@ -211,11 +211,11 @@ def gain_control():
+                 + "You are the current controller"
+             )
+         )
+-        eval(input("Press any key to continue"))
++        input("Press any key to continue")
+         return True
+     else:
+         print(("Astrobee's controller is: " + current_controller + "\n"))
+-        eval(input("Press any key to grab control of the robot"))
++        input("Press any key to grab control of the robot")
+ 
+     # Request and grab control
+     print(" > Requesting control")
+@@ -292,7 +292,7 @@ def select_app():
+ 
+     # Choose an app
+     try:
+-        selection = eval(input("\nType the number of app you want to select: "))
++        selection = int(input("\nType the number of app you want to select: "))
+     except:
+         print(" > Invalid entry")
+         time.sleep(1)
+@@ -320,12 +320,12 @@ def select_action():
+         "f) Exit"
+     )
+ 
+-    option = eval(input("\nType an option: "))
++    option = input("\nType an option: ")
+     return option
+ 
+ 
+ def input_thread(a_list):
+-    eval(input())
++    input()
+     a_list.append(True)
+ 
+ 
+@@ -418,11 +418,10 @@ def execute_action(selection):
+             print_app_cmd(selection)
+             print((str(num_cmds + 1) + ")  Exit program"))
+ 
+-            command_str = eval(
++            command_str = \
+                 input(
+                     "\nType the number of the command you wish to send or the command string: "
+                 )
+-            )
+             try:
+                 # Convert to an integer, the number of the command
+                 command = int(command_str)
+@@ -472,7 +471,7 @@ def execute_action(selection):
+         final_act = ACTION_CONTINUE
+ 
+     if final_act != ACTION_GO_BACK and final_act != ACTION_EXIT:
+-        eval(input("\nPress any key to continue"))
++        input("\nPress any key to continue")
+ 
+     return final_act
+ 

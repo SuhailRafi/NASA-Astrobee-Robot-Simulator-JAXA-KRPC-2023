@@ -1,0 +1,15 @@
+@startuml
+
+title Key Astrobee Nodes Interactions
+
+!define SHOW_LLP
+!define SHOW_MLP
+!define SHOW_ALL_TYPES
+
+!include "nodes.puml"
+
+MLP --[hidden]-- LLP
+'llp_i2c --[hidden]-- llp_serial
+'llp_i2c --[hidden]-- llp_spi
+
+@enduml

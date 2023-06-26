@@ -1,0 +1,137 @@
+# dot -Tpdf perch_fsm.dot -o perch_fsm.pdf
+digraph G {
+  graph [label="PERCH\n", labelloc=t, fontsize=50];
+  ratio="fill";
+  size="8.3,11.7!";
+  node [shape=box, width=4, fontsize=12, fontname="helvetica"];
+  edge [arrowsize=2, weight=2., fontsize=12, fontname="helvetica"];
+  fontname = "helvetica";
+
+  node [shape=diamond, style=filled, fillcolor=lightblue, color=black];
+  INITIALIZING;
+
+  node [shape=box, style=filled, fillcolor=lightblue, color=black];
+  UNKNOWN;
+  PERCHED;
+  UNPERCHED;
+
+  node [shape=box, style=filled, fillcolor=aquamarine, color=black];
+  PERCHING_SWITCHING_TO_HR_LOC;
+  PERCHING_MOVING_TO_APPROACH_POSE;
+  PERCHING_DEPLOYING_ARM;
+  PERCHING_OPENING_GRIPPER;
+  PERCHING_MOVING_TO_COMPLETE_POSE;
+  PERCHING_CLOSING_GRIPPER;
+  PERCHING_CHECKING_ATTACHED;
+  PERCHING_WAITING_FOR_SPIN_DOWN;
+  PERCHING_SWITCHING_TO_PL_LOC;
+
+  node [shape=box, style=filled, fillcolor=gold, color=black];
+  UNPERCHING_SWITCHING_TO_ML_LOC;
+  UNPERCHING_WAITING_FOR_SPIN_UP;
+  UNPERCHING_OPENING_GRIPPER;
+  UNPERCHING_MOVING_TO_APPROACH_POSE;
+  UNPERCHING_STOWING_ARM;
+
+
+  node [shape=box, style=filled, fillcolor=lightpink, color=black];
+  RECOVERY_OPENING_GRIPPER;
+  RECOVERY_MOVING_TO_RECOVERY_POSE;
+  RECOVERY_STOWING_ARM;
+  RECOVERY_SWITCH_TO_ML_LOC;
+
+  # Transparent state changes
+  INITIALIZING -> UNKNOWN
+    [label="[0]\nE:READY", color=blue];
+  UNKNOWN -> UNPERCHED
+    [label="[1]\nE:ARM_STOWED", color=blue];
+  UNKNOWN -> PERCHED
+    [label="[2]\nE:ARM_DEPLOYED", color=blue];
+
+  # Nominal perch
+  UNPERCHED -> PERCHING_SWITCHING_TO_HR_LOC
+    [label="[3]\nE:GOAL_PERCH\nSwitch(HR)"];
+  PERCHING_SWITCHING_TO_HR_LOC -> PERCHING_MOVING_TO_APPROACH_POSE
+    [label="[4]\nE:SWITCH_SUCCESS\nMove(APPROACH, NOMINAL)"];
+  PERCHING_MOVING_TO_APPROACH_POSE -> PERCHING_DEPLOYING_ARM
+    [label="[5]\nE:MOTION_SUCCESS\nArm(DEPLOY)"];
+  PERCHING_DEPLOYING_ARM -> PERCHING_OPENING_GRIPPER
+    [label="[6]\nE:ARM_SUCCESS\nArm(OPEN)"];
+  PERCHING_OPENING_GRIPPER -> PERCHING_MOVING_TO_COMPLETE_POSE
+    [label="[7]\nE:ARM_SUCCESS\nMove(COMPLETE, PERCHING)"];
+  PERCHING_MOVING_TO_COMPLETE_POSE -> PERCHING_CLOSING_GRIPPER
+    [label="[8]\nE:MOTION_SUCCESS\nArm(CLOSE)"];
+  PERCHING_CLOSING_GRIPPER -> PERCHING_CHECKING_ATTACHED
+    [label="[9]\nE:ARM_SUCCESS\nMove(APPROACH, NOMINAL)"];
+  PERCHING_CHECKING_ATTACHED -> PERCHING_WAITING_FOR_SPIN_DOWN
+    [label="[10]\nE:MOTION_FAILED\nPrep(OFF)"];
+  PERCHING_WAITING_FOR_SPIN_DOWN -> PERCHING_SWITCHING_TO_PL_LOC
+    [label="[11]\nE:PMC_OFF\nSwitch(PL)" ];
+  PERCHING_SWITCHING_TO_PL_LOC -> PERCHED
+    [label="[12]\nE:SWITCH_SUCCESS", color=darkgreen];
+
+  # Nominal unperch
+  PERCHED -> UNPERCHING_SWITCHING_TO_ML_LOC
+    [label="[13]\nE:GOAL_UNPERCH\nSwitch(ML)"];
+  UNPERCHING_SWITCHING_TO_ML_LOC -> UNPERCHING_WAITING_FOR_SPIN_UP
+    [label="[14]\nE:SWITCH_SUCCESS\nPrep(NOMINAL)"];
+  UNPERCHING_WAITING_FOR_SPIN_UP -> UNPERCHING_OPENING_GRIPPER
+    [label="[15]\nE:PMC_READY\nArm(OPEN)"];
+  UNPERCHING_OPENING_GRIPPER -> UNPERCHING_MOVING_TO_APPROACH_POSE
+    [label="[16]\nE:ARM_SUCCESS\nMove(APPROACH_POSE, NOMINAL)"];
+  UNPERCHING_MOVING_TO_APPROACH_POSE -> UNPERCHING_STOWING_ARM
+    [label="[17]\nE:MOTION_SUCCESS\nArm(STOW)"];
+  UNPERCHING_STOWING_ARM -> UNPERCHED
+    [label="[18]\nE:ARM_SUCCESS", color=darkgreen];
+
+  # Off-nominal states
+  # perch
+  PERCHING_SWITCHING_TO_HR_LOC -> UNPERCHED
+    [label="[19]\nE:SWITCH_FAILED", color=red];
+  PERCHING_MOVING_TO_APPROACH_POSE -> RECOVERY_SWITCH_TO_ML_LOC
+    [label="[20]\nE:MOTION_FAILED", color=red];
+  PERCHING_DEPLOYING_ARM -> RECOVERY_SWITCH_TO_ML_LOC
+    [label="[21]\nE:ARM_FAILED", color=red];
+  PERCHING_OPENING_GRIPPER -> RECOVERY_STOWING_ARM
+    [label="[22]\nE:ARM_FAILED", color=red];
+  PERCHING_MOVING_TO_COMPLETE_POSE -> RECOVERY_OPENING_GRIPPER
+    [label="[23]\nE:MOTION_FAILED", color=red];
+  PERCHING_CLOSING_GRIPPER -> RECOVERY_OPENING_GRIPPER
+    [label="[24]\nE:ARM_FAILED", color=red];
+  PERCHING_CHECKING_ATTACHED -> RECOVERY_OPENING_GRIPPER
+    [label="[25]\nE:MOTION_SUCCESS", color=red];
+  PERCHING_WAITING_FOR_SPIN_DOWN -> PERCHED
+    [label="[26]\nE:MOTION_FAILED", color=red];
+  PERCHING_SWITCHING_TO_PL_LOC -> PERCHED
+    [label="[27]\nE:SWITCH_FAILED", color=red];
+
+  # unperch
+  UNPERCHING_SWITCHING_TO_ML_LOC -> PERCHED
+    [label="[28]\nE:SWITCH_FAILED", color=red];
+  UNPERCHING_WAITING_FOR_SPIN_UP -> PERCHED
+    [label="[29]\nE:MOTION_FAILED", color=red];
+  UNPERCHING_OPENING_GRIPPER -> PERCHED
+    [label="[30]\nE:ARM_FAILED", color=red];
+  UNPERCHING_MOVING_TO_APPROACH_POSE -> RECOVERY_MOVING_TO_RECOVERY_POSE
+    [label="[31]\nE:MOTION_FAILED", color=red];
+  UNPERCHING_STOWING_ARM -> RECOVERY_STOWING_ARM
+    [label="[32]\nE:ARM_FAILED", color=red];
+
+  # Recovery
+  RECOVERY_OPENING_GRIPPER -> RECOVERY_SWITCH_TO_ML_LOC
+    [label="[33]\nE:ARM_SUCCESS", color=black];
+  RECOVERY_OPENING_GRIPPER -> RECOVERY_SWITCH_TO_ML_LOC
+    [label="[33]\nE:ARM_FAILED", color=red];
+  RECOVERY_SWITCH_TO_ML_LOC -> RECOVERY_MOVING_TO_RECOVERY_POSE
+    [label="[34]\nE:SWITCH_SUCCESS", color=black];
+  RECOVERY_SWITCH_TO_ML_LOC -> UNPERCHED
+    [label="[34]\nE:SWITCH_FAILED", color=red];
+  RECOVERY_MOVING_TO_RECOVERY_POSE -> RECOVERY_STOWING_ARM
+    [label="[35]\nE:MOTION_SUCCESS", color=black];
+  RECOVERY_MOVING_TO_RECOVERY_POSE -> UNPERCHED
+    [label="[35]\nE:MOTION_FAILED", color=red];
+  RECOVERY_STOWING_ARM -> UNPERCHED
+    [label="[36]\nE:ARM_SUCCESS", color=black];
+  RECOVERY_STOWING_ARM -> UNPERCHED
+    [label="[36]\nE:ARM_FAILED", color=red];
+}

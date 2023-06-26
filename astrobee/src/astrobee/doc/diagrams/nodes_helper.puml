@@ -1,0 +1,75 @@
+'
+' Some macros to add condinationaly nodes depending on the desired configuration
+'
+
+!include "common.puml"
+
+!definelong start_manager(name)
+!ifdef SHOW_MANAGERS
+  frame "name" {
+!else
+  ' frame  [ name ] not sown
+!endif
+!enddefinelong
+
+!definelong end_manager()
+!ifdef SHOW_MANAGERS
+  }
+!else
+  ' end of hidden frame
+!endif
+!enddefinelong
+
+!definelong add_mgt(comp)
+!ifdef SHOW_MGT
+    component comp COLOR_MGT
+!else
+    ' skip MGT nodes
+!endif
+!enddefinelong
+
+!definelong add_drv(comp)
+!ifdef SHOW_DRV
+    component comp COLOR_DRV
+!else
+    ' skip DRV nodes
+!endif
+!enddefinelong
+
+!definelong add_com(comp)
+!ifdef SHOW_COM
+    component comp COLOR_COM
+!else
+    ' skip COM nodes
+!endif
+!enddefinelong
+
+!definelong add_gnc(comp)
+!ifdef SHOW_GNC
+    component comp COLOR_GNC
+!else
+    ' skip GNC nodes
+!endif
+!enddefinelong
+
+!definelong add_loc(comp)
+!ifdef SHOW_LOC
+    component comp COLOR_LOC
+!else
+    ' skip LOC nodes
+!endif
+!enddefinelong
+
+!definelong add_mob(comp)
+!ifdef SHOW_MOB
+    component comp COLOR_MOB
+!else
+    ' skip MOB nodes
+!endif
+!enddefinelong
+
+!define add_srv(s) interface s <<service>>
+
+!define add_act(a) interface a <<action>>
+
+!define add_msg(m, t = "msg") interface m <<t>>

@@ -1,0 +1,121 @@
+--- gazebo_model_plugin_flashlight.orig/gazebo_model_plugin_flashlight.cc
++++ gazebo_model_plugin_flashlight/gazebo_model_plugin_flashlight.cc
+@@ -30,6 +30,7 @@
+ 
+ // Freeflyer messages
+ #include <ff_hw_msgs/SetFlashlight.h>
++#include <ff_hw_msgs/SetEnabled.h>
+ 
+ // STL includes
+ #include <string>
+@@ -54,6 +55,9 @@ class GazeboModelPluginFlashlight : publ
+   }
+ 
+  protected:
++  // Light delay time[us]
++  int light_delay_time = 0.5 * 1000000;
++
+   // Called when the plugin is loaded into the simulator
+   void LoadCallback(ros::NodeHandle *nh,
+     physics::ModelPtr model, sdf::ElementPtr sdf) {
+@@ -88,6 +92,8 @@ class GazeboModelPluginFlashlight : publ
+   void OnExtrinsicsReceived(ros::NodeHandle *nh) {
+     srv_ = nh->advertiseService("hw/" + plugin_frame_ + "/control",
+       &GazeboModelPluginFlashlight::ToggleCallback, this);
++    srv_check_ = nh->advertiseService("hw/" + plugin_frame_ + "/check",
++      &GazeboModelPluginFlashlight::CheckCallback, this);
+   }
+ 
+ 
+@@ -149,7 +155,8 @@ class GazeboModelPluginFlashlight : publ
+     pub_visual_->Publish(visual_);
+ 
+     // Create the gazebo light
+-    light_.set_name(GetFrame(plugin_frame_ + "_front_light", "_"));
++    light_name_ = GetFrame(plugin_frame_ + "_light", "_");
++    light_.set_name(light_name_);
+     light_.set_type(msgs::Light::SPOT);
+     light_.set_attenuation_constant(1.0);
+     light_.set_attenuation_linear(0.02);
+@@ -164,6 +171,9 @@ class GazeboModelPluginFlashlight : publ
+     #if GAZEBO_MAJOR_VERSION < 11
+     msgs::Set(light_.mutable_diffuse(), common::Color(0.5, 0.5, 0.5, 1));
+     msgs::Set(light_.mutable_specular(), common::Color(0.1, 0.1, 0.1, 1));
++    #else
++    msgs::Set(light_.mutable_diffuse(), ignition::math::Color(0.5, 0.5, 0.5, 0.1));
++    msgs::Set(light_.mutable_specular(), ignition::math::Color(0.1, 0.1, 0.1, 0.1));
+     #endif
+ 
+     #if GAZEBO_MAJOR_VERSION > 7
+@@ -183,9 +193,40 @@ class GazeboModelPluginFlashlight : publ
+     return true;
+   }
+ 
+-  // Called when the laser needs to be toggled
++  // Called when check the light validity
++  bool CheckCallback(ff_hw_msgs::SetEnabled::Request &req,
++                      ff_hw_msgs::SetEnabled::Response &res) {
++
++      if (req.enabled) {
++        light_name_ = GetFrame(plugin_frame_ + "_light", "_") + std::to_string((cnt_));
++
++        // add a light to the scene for the light stability
++        rendering::ScenePtr scene = rendering::get_scene(this->GetWorld()->Name());
++        rendering::LightPtr light_to_scene = scene->LightByName(GetFrame(plugin_frame_ + "_light", "_"))->Clone(light_name_, scene);
++        light_to_scene->SetName(light_name_);
++        // turn on
++        light_to_scene->SetAttenuation(0.0, 0.02, 0.0);
++
++        // publish a light to gazebo
++        light_.set_name(light_name_);
++        light_.set_attenuation_constant(0.0);
++        pub_factory_->Publish(light_);
++        cnt_++;
++      } else {
++        light_.set_attenuation_constant(1.0);
++        pub_light_->Publish(light_);
++      }
++      res.success = true;
++      res.status_message = "Light Check toggled successfully";
++      return true;
++
++  }
++
++  // Called when the light needs to be toggled
+   bool ToggleCallback(ff_hw_msgs::SetFlashlight::Request &req,
+                       ff_hw_msgs::SetFlashlight::Response &res) {
++    // Light delay time
++    usleep(light_delay_time);
+     // Update the alpha channel in rviz
+     marker_.header.stamp = ros::Time::now();
+     marker_.color.a = static_cast<double>(req.brightness) / 200.0;
+@@ -198,6 +239,7 @@ class GazeboModelPluginFlashlight : publ
+     pub_visual_->Publish(visual_);
+ 
+     // Update the gazebo light
++    light_.set_name(light_name_);
+     light_.set_attenuation_constant(1.0 - marker_.color.a);
+     pub_light_->Publish(light_);
+ 
+@@ -225,16 +267,20 @@ class GazeboModelPluginFlashlight : publ
+   transport::PublisherPtr pub_visual_, pub_factory_, pub_light_;
+   event::ConnectionPtr update_;
+   ros::Timer timer_;
+-  ros::ServiceServer srv_;
++  ros::ServiceServer srv_, srv_check_;
+   ros::Publisher pub_rviz_;
+   visualization_msgs::Marker marker_;
+   msgs::Light light_;
+   msgs::Visual visual_;
+   ignition::math::Pose3d pose_;
+   std::string plugin_frame_ = "";
++  std::string light_name_ = "";
++  int cnt_ = 0;
++
+ };
+ 
+ // Register this plugin with the simulator
+ GZ_REGISTER_MODEL_PLUGIN(GazeboModelPluginFlashlight )
+ 
+ }   // namespace gazebo
++

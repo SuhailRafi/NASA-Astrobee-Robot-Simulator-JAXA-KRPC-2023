@@ -1,0 +1,28 @@
+--- ./src/astrobee/astrobee/launch/sim.launch	2023-02-13 16:37:38.271536371 +0900
++++ ./src/astrobee/astrobee/launch/sim.launch.new	2023-02-13 16:38:03.887537739 +0900
+@@ -93,6 +93,9 @@
+   <!-- Declare our global logging format -->
+   <env name="ROSCONSOLE_FORMAT" value="[${severity}] [${time}] : (${logger}) ${message}"/>
+ 
++  <!-- Set simulation parameter -->
++  <param name="krpc/on_simulation" value="true" />
++
+   <!-- Always launch on the local machine -->
+   <group>
+     <machine name ="local" address="localhost" default="true"/>
+@@ -233,4 +236,15 @@
+   <!-- Default call initialize bias so config file is created if not already present -->
+   <node pkg="rosservice" type="rosservice" name="imu_calibration" args="call --wait /gnc/ekf/init_bias" />
+ 
++  <node name="noise" pkg="topic_tools" type="relay" args="/gnc/ekf /gnc/ekf_noise" respawn="true" />
++  <node name="teleop_tool" pkg="executive" type="teleop_tool" args="-set_face_forward 'off'" />
++  <node name="marker_publisher" pkg="rostopic" type="rostopic"
++    args="pub --once /command ff_msgs/CommandStamped &quot;{
++                cmd_name: 'setOperatingLimits', subsys_name: 'Settings', args: [
++                {data_type: 5, s: iss_jaxa}, {data_type: 5, s: nominal},
++                {data_type: 2, f: 0.1500}, {data_type: 2, f: 0.0175},
++                {data_type: 2, f: 0.0873}, {data_type: 2, f:  0.1745},
++                {data_type: 2, f: 0}
++  ]
++  }&quot;" />
+ </launch>

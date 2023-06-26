@@ -1,0 +1,11 @@
+--- ./src/astrobee/astrobee/config/behaviors/dock.config	2021-03-21 13:12:39.566749895 +0900
++++ ./src/astrobee/astrobee/config/behaviors/dock.config.new	2021-03-21 13:12:39.574749895 +0900
+@@ -134,7 +134,7 @@ parameters = {
+     id = "enable_faceforward",
+     reconfigurable = false,
+     type = "boolean",
+-    default = true,
++    default = false,
+     unit = "boolean",
+     description = "Should planning be face-forward only?"
+   },{

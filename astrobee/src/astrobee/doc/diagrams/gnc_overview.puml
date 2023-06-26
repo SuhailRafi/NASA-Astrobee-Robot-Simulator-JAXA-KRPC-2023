@@ -1,0 +1,65 @@
+@startuml
+
+title GNC Overview
+
+!define SHOW_ALL_TYPES true
+!include "common.puml"
+
+frame mob {
+  mob_node(choregrapher)
+  action(Motion, ff_msgs::MotionAction, /mob/motion)
+}
+
+frame gnc {
+  gnc_node(CTL)
+  gnc_node(FAM)
+  action(Control, ff_msgs::ControlAction, /gnc/control)
+  'message(Wrench, geometry_msgs::WrenchStamped, /gnc/wrench)
+  'message(Pose, geometry_msgs::PoseStamped, /gnc/pose)
+  'message(Vels, gemoetry_msgs:TwistStamped, /gnc/twist)
+}
+
+
+message(Landmarks, ff_msgs::VisualLandmarks, "/loc/{ml,ar,of}/features")
+
+'frame drv {
+  drv_node(pmc_actuator)
+  message(PmcTelemetry, ff_hw_msgs::PmcTelemetry, /hw/pmc/telemetry)
+'}
+
+latching_msg(Inertia, geometry_msgs::InertiaStamped, /mob/inertia)
+latching_msg(FlightMode, ff_msgs::FlightMode, /mob/flight_mode)
+
+Landmarks -r-> LOC : "                "
+
+FlightMode --> FAM
+FlightMode --> choregrapher
+Inertia -up-> LOC
+Inertia -up-> CTL
+Inertia -up-> FAM
+
+'LOC -r-> Pose
+'LOC -r-> Vels
+'Pose -r-> CTL
+'Vels -r-> CTL
+
+LOC -r-> CTL : "/loc/{pose,twist}\n[geometry_msgs::{Pose,Twist}Stamped]"
+CTL -r-> FAM : "/gnc/ctl/command\n[ff_msgs::FamCommand]"
+'CTL -r-> Wrench : "                "
+'Wrench -r-> FAM : "                "
+
+Motion -- choregrapher
+choregrapher <<-->> Control
+Control -- CTL
+
+pmc_actuator --> PmcTelemetry
+FAM -r-> pmc_actuator : "/hw/pmc/command\n[ff_msgs::PmcCommand]"
+
+
+note top of Landmarks
+This is a simplification:
+Registrations signal is
+also coming in
+endnote
+
+@enduml

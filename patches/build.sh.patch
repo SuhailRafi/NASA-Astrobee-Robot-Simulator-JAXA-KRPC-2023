@@ -1,0 +1,54 @@
+--- build.sh	2023-01-06 19:09:39.511550988 +0900
++++ build.sh.new	2023-01-06 19:26:20.275515651 +0900
+@@ -162,6 +162,13 @@ elif [ "$os" = "focal" ]; then
+     ROS_VERSION=noetic
+     PYTHON='3'
+ fi
++
++if [ "${NUM_JOBS}" = "" ]; then
++  NUM_JOBS=1
++else
++  NUM_JOBS=$NUM_JOBS
++fi
++
+ echo "Building Ubuntu $UBUNTU_VERSION images"
+ 
+ ######################################################################
+@@ -183,7 +190,9 @@ fi
+ ######################################################################
+ 
+ build () {
++    ## ↓Not used in KRPC4th
+     stage=$1
++    ## ↑
+     tag_revision=$2
+     tag_stage=$3
+ 
+@@ -200,12 +209,24 @@ build () {
+ 
+     set -x
+     docker build . \
+-           -f ./scripts/docker/${stage}.Dockerfile \
++           -f ./scripts/docker/astrobee_base.Dockerfile \
++           --build-arg baseImage=${baseImage} \
+            --build-arg UBUNTU_VERSION=${UBUNTU_VERSION} \
+            --build-arg ROS_VERSION=${ROS_VERSION} \
+            --build-arg PYTHON=${PYTHON} \
+-           $remote_args \
+-           -t astrobee/astrobee:${tag_revision}${tag_stage}ubuntu${UBUNTU_VERSION}
++           --build-arg HTTP_PROXY=${HTTP_PROXY} \
++           --build-arg HTTPS_PROXY=${HTTPS_PROXY} \
++           --build-arg http_proxy=${http_proxy} \
++           --build-arg https_proxy=${https_proxy} \
++           -t ${astrobeeBaseTag}
++    docker build . \
++           -f ./scripts/docker/astrobee.Dockerfile \
++           --build-arg UBUNTU_VERSION=${UBUNTU_VERSION} \
++           --build-arg ROS_VERSION=${ROS_VERSION} \
++           --build-arg NUM_JOBS=${NUM_JOBS} \
++           --build-arg TAG=${astrobeeBaseTag} \
++           -t ${astrobeeTag}
++    
+     { set +x; } 2>/dev/null
+ }
+ 

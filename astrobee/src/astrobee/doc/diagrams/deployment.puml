@@ -1,0 +1,151 @@
+@startuml
+
+!include "colors.puml"
+
+!define COLOR_MPROC COLOR_6PASTEL_5
+!define COLOR_PSOM COLOR_6PASTEL_3
+
+'!define SHOW_NETWORK
+'!define SHOW_OS
+
+skinparam component {
+  backgroundColor COLOR_6PASTEL_2
+  borderColor COLOR_6DARK_2
+  arrowColor #MidnightBlue
+}
+
+skinparam interface {
+ borderColor<<wired>> COLOR_6DARK_4
+ backgroundColor<<wired>> COLOR_6PASTEL_4
+ borderColor<<wifi>> COLOR_6DARK_6
+ backgroundColor<<wifi>> COLOR_6PASTEL_6
+}
+
+title Astrobee Hardware Deployement Diagram
+
+frame Dock {
+  interface "Network \n Switch \n(to each \n dock berths)" <<wired>> as ethd
+  node DockBoard <<Wandboard Dual>> COLOR_PSOM [
+    **Dock** Processor
+!ifdef SHOW_OS
+    //Ubuntu//
+!endif
+  ]
+  node "Dock Controller" <<PIC>> as DockControl COLOR_MPROC
+  node ["DockActuator (2x)"] as DA
+  DockControl -- DA
+}
+
+frame Astrobee {
+
+  interface "Network \n Switch" <<wired>> as etha
+
+  node HLP <<Inforce 6601>> COLOR_PSOM [
+    **HLP**
+!ifdef SHOW_OS
+    //Android//
+!endif
+  ]
+
+  node MLP <<Inforce 6501>> COLOR_PSOM [
+    **MLP**
+!ifdef SHOW_OS
+    //Ubuntu//
+!endif
+  ]
+
+  node LLP <<Wandboard Dual>> COLOR_PSOM [
+    **LLP**
+!ifdef SHOW_OS
+    //Ubuntu//
+!endif
+  ]
+
+  node "PMC (2x)" <<PIC>> as PMC COLOR_MPROC
+  node "SignalLight (2x)" <<PIC>> as SL COLOR_MPROC
+  node Speedcam <<ARM Cortex>> COLOR_6PASTEL_1
+  node EPS <<PIC>> COLOR_MPROC
+
+  node PerchArm <<PIC>> COLOR_MPROC
+
+  [Scicam] -- HLP : MIPI-CSI
+  [TouchScreen] -- HLP : MIPI-DSI
+  [Microphone] -- HLP : audio
+  [Speaker] -- HLP : audio
+
+  [IMU] -- LLP : SPI
+  [Laser] -- LLP : GPIO
+  [FrontLight] --o LLP : I2C (i2c-1)
+  [BackLight] --o LLP : I2C (i2c-1)
+
+  [Navcam] -- MLP : USB
+  [Dockcam] -- MLP : USB
+  [Hazcam] -- MLP : USB
+  [Perchcam] -- MLP : USB
+
+  EPS -- [StatusLights] : GPIO
+  EPS o-- [SmartBatteries] : I2C/SMbus
+
+  interface "MLP Wifi" <<wifi>> as mlp_wifi
+  interface "HLP Wifi" <<wifi>> as hlp_wifi
+  HLP -- etha
+  MLP -- etha
+  mlp_wifi -left- MLP
+  hlp_wifi -left- HLP
+}
+
+!ifdef SHOW_NETWORK
+frame "ISS Services" {
+  interface "ISS Wifi" <<wifi>> as iss_wifi
+  interface "ISS Payload LAN" <<wired>> as wired
+  iss_wifi -down- wired
+}
+wired -down- ethd
+mlp_wifi ..right.. iss_wifi
+hlp_wifi ..right.. iss_wifi
+!endif
+
+etha -right- ethd
+DockBoard -left- ethd
+DockBoard o-- DockControl  : I2C
+EPS o-right- DockControl : "I2C (2x)"
+
+MLP -- PerchArm : USB
+
+etha -l- LLP
+
+LLP "2" o-- PMC : I2C (i2c-2)
+LLP "2" o-- SL : I2C (i2c-1)
+LLP -- Speedcam : USB
+LLP o-- EPS : I2C (i2c-1)
+
+' To help get a nice layout:
+PMC -[hidden]- SL
+PMC -[hidden]> Speedcam
+Speedcam -[hidden]> EPS
+
+MLP --[hidden]-- LLP
+HLP --[hidden]-- MLP
+
+' Notation used in the diagram:
+node ProcessorLegend COLOR_PSOM
+node MicrocontrollerLegend COLOR_MPROC
+ProcessorLegend -- [DeviceLegend] : communication protocol\n indicated
+
+ProcessorLegend o-- MicrocontrollerLegend : losange indicates master\n if I2C device
+note top of ProcessorLegend
+Microprocessor
+(System On Chip computer)
+end note
+
+note bottom of [DeviceLegend]
+Hardware component (sensor
+or actuator
+end note
+
+note bottom of MicrocontrollerLegend
+Microntroller with custom
+firmware
+end note
+
+@enduml

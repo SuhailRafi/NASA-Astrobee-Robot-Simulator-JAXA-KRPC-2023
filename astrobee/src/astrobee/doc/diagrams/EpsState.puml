@@ -1,0 +1,108 @@
+@startuml
+
+title Astrobee EPS Firmware State
+
+legend
+= TRANSITION TYPES:
+)UI interaction(
+[internal firmware]
+/external command/
+endlegend
+[*] -> OFF
+
+OFF: No power to the EPS
+
+state BOOTLOADER {
+DEFAULT: Bootloader mode\with 2s timeout
+DEFAULT: All channels OFF
+RESCUE: Bootloader mode\nwithout timeout
+RESCUE: Only Processors ON
+RESCUE: LLP wake up
+}
+
+state HIBERNATE
+
+'OFF -d----> HIBERNATE : )wake short press(
+
+HIBERNATE: EPS powered, firmware UP
+HIBERNATE: All power channels OFF
+HIBERNATE: (including Processors)
+
+state AWAKE {
+
+AWAKE_NOMINAL: Processors ON
+AWAKE_NOMINAL: Flag to start FSW TRUE
+AWAKE_NOMINAL: Power to PMCs initially ON
+AWAKE_NOMINAL: Power to BAYs initially OFF
+
+AWAKE_SAFE: Processors ON
+AWAKE_SAFE: Flag to start FSW FALSE
+AWAKE_SAFE: Power to PMCs initially OFF
+AWAKE_SAFE: Power to BAYs initially OFF
+
+}
+
+CRITICAL_FAULT: Safeguarding for major power anomaly
+CRITICAL_FAULT: All power channels OFF
+
+TERMINATED: Power to the PMCs and BAYs OFF
+TERMINATED: Disabling PMCs and BAYs\nchannels until cleared
+TERMINATED: Processors ON
+
+OFF --> RESCUE : )Terminate Pressed + Switch ON(
+OFF --> DEFAULT : )Switch ON(
+
+RESCUE --> HIBERNATE : /astroboot_linux/
+DEFAULT --> HIBERNATE : [jump to app after 2s]
+
+HIBERNATE ---> AWAKE_NOMINAL : )wake short press(
+
+HIBERNATE ---> AWAKE_NOMINAL : /dock wakeup/
+
+HIBERNATE ---> AWAKE_SAFE : )terminate + wake short press(
+
+AWAKE ---> HIBERNATE : /dock hibernate/
+' Not sure why, but this -l- does some magic to the diagram!
+
+AWAKE ---> HIBERNATE : )wake long press(
+
+AWAKE ----> HIBERNATE : /hibernate cmd/
+
+AWAKE ----> OFF : )switch off(
+
+AWAKE --> CRITICAL_FAULT : [error code]
+
+HIBERNATE -------> CRITICAL_FAULT : [error code]
+
+CRITICAL_FAULT ---> OFF : )switch off(
+
+AWAKE ----> TERMINATED : )terminate button(
+
+TERMINATED ----> AWAKE : /clear terminate cmd/
+
+TERMINATED --> OFF : )switch off(
+
+OFF --> [*]
+
+note right of OFF
+OFF is not observable
+by the EPS firmware
+endnote
+
+note right of BOOTLOADER
+1) BOOTLOADER is not a EPS state per-say
+since the firmware app did not start yet
+2) DEFAULT mode can also be entered from
+a reset while in AWAKE state
+(using astroboot_linux -r)
+endnote
+
+
+note right of CRITICAL_FAULT
+The Astrobee needs to be turned
+off after a critical fault is
+encountered. Critical faults can
+be signaled with the status LEDs.
+endnote
+
+@enduml

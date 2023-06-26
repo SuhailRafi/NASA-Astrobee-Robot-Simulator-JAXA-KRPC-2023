@@ -1,0 +1,169 @@
+--- model.urdf	2023-02-13 18:48:05.727908119 +0900
++++ model.urdf.new	2023-02-13 18:38:11.347894015 +0900
+@@ -25,46 +25,6 @@
+       <inertia ixx="10276978" ixy="-1084837" ixz="597098"
+                iyy="31940398" iyz="-614081"  izz="40019058"/>
+     </inertial>
+-    <!-- Cupola -->
+-    <visual name="iss_cupola_visual">
+-      <origin xyz="-4.4586144 -6.8356992 6.8434244" rpy="0 0 0" />
+-      <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/cupola.dae"/>
+-      </geometry>
+-    </visual>
+-    <collision name="iss_cupola_collision">
+-      <origin xyz="-4.4586144 -6.8356992 6.8434244" rpy="0 0 0" />
+-      <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/cupola.dae"/>
+-      </geometry>
+-      <gazebo>
+-        <surface>
+-          <contact>
+-            <collide_bitmask>0x01</collide_bitmask>
+-          </contact>
+-        </surface>
+-      </gazebo>
+-    </collision>
+-    <!-- EU Lab -->
+-    <visual name="iss_eu_lab_visual">
+-      <origin xyz="10.9325664  2.3509732 4.8505872" rpy="0 0 0" />
+-      <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/eu_lab.dae"/>
+-      </geometry>
+-    </visual>
+-    <collision name="iss_eu_lab_collision">
+-      <origin xyz="10.9325664  2.3509732 4.8505872" rpy="0 0 0" />
+-      <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/eu_lab.dae"/>
+-      </geometry>
+-      <gazebo>
+-        <surface>
+-          <contact>
+-            <collide_bitmask>0x01</collide_bitmask>
+-          </contact>
+-        </surface>
+-      </gazebo>
+-    </collision>
+     <!-- JPM -->
+     <visual name="iss_jpm_visual">
+       <origin xyz="10.9358938 -2.3364698 4.8505872" rpy="3.1415 0 -1.570796" />
+@@ -85,86 +45,57 @@
+         </surface>
+       </gazebo>
+     </collision>
+-    <!-- Node 1 -->
+-    <visual name="iss_node_1_visual">
+-      <origin xyz="-4.4630848 -0.0027432 4.8508666" rpy="0 0 0" />
++    <!-- Target -->
++    <visual name="target1">
++      <!-- AirLock -->
++      <origin xyz="11.2625 -10.58 5.3625" rpy="1.570796 0 0" />
+       <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/node_1.dae"/>
++        <mesh filename="package://astrobee_iss/meshes/target1.dae"/>
+       </geometry>
+     </visual>
+-    <collision name="iss_node_1_collision">
+-      <origin xyz="-4.4630848 -0.0027432 4.8508666" rpy="0 0 0" />
++    <visual name="target2">
++      <!-- Bay6 Overhead -->
++      <origin xyz="10.513384 -9.085172 3.76203" rpy="0 0 0" />
+       <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/node_1.dae"/>
+-      </geometry>
+-      <gazebo>
+-        <surface>
+-          <contact>
+-            <collide_bitmask>0x01</collide_bitmask>
+-          </contact>
+-        </surface>
+-      </gazebo>
+-    </collision>
+-    <!-- Node 2 -->
+-    <visual name="iss_node_2_visual">
+-      <origin xyz="10.9344206  0.0107442 4.8558958" rpy="0 0 0" />
+-      <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/node_2.dae"/>
++        <mesh filename="package://astrobee_iss/meshes/target2.dae"/>
+       </geometry>
+     </visual>
+-    <collision name="iss_node_2_collision">
+-      <origin xyz="10.9344206  0.0107442 4.8558958" rpy="0 0 0" />
++    <visual name="target3">
++      <!-- Bay5 Overhead -->
++      <origin xyz="10.6031 -7.71007 3.76093" rpy="0 0 1.570796" />
+       <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/node_2.dae"/>
++        <mesh filename="package://astrobee_iss/meshes/target3.dae"/>
+       </geometry>
+-      <gazebo>
+-        <surface>
+-          <contact>
+-            <collide_bitmask>0x01</collide_bitmask>
+-          </contact>
+-        </surface>
+-      </gazebo>
+-    </collision>
+-    <!-- Node 3 -->
+-    <visual name="iss_node_3_visual">
+-      <origin xyz="-4.4586144 -6.6356992 4.8434244" rpy="0 0 0" />
++    </visual>
++    <visual name="target4">
++      <!-- Bay4 Aft -->
++      <origin xyz="9.866984 -6.673972 5.09531" rpy="-1.570796 0 -1.570796" />
+       <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/node_3.dae"/>
++        <mesh filename="package://astrobee_iss/meshes/target4.dae"/>
+       </geometry>
+     </visual>
+-    <collision name="iss_node_3_collision">
+-      <origin xyz="-4.4586144 -6.6356992 4.8434244" rpy="0 0 0" />
++    <visual name="target5">
++      <!-- Bay5 Deck -->
++      <origin xyz="11.102 -8.0304 5.9076" rpy="3.1415927 0 0" />
+       <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/node_3.dae"/>
++        <mesh filename="package://astrobee_iss/meshes/target5.dae"/>
+       </geometry>
+-      <gazebo>
+-        <surface>
+-          <contact>
+-            <collide_bitmask>0x01</collide_bitmask>
+-          </contact>
+-        </surface>
+-      </gazebo>
+-    </collision>
+-    <!-- US Lab -->
+-    <visual name="iss_us_lab_visual">
+-      <origin xyz="6.3085472  0.0064770 4.8508920" rpy="3.1415 0 0" />
++    </visual>
++    <visual name="target6">
++      <!-- Bay6 Fwd  -->
++      <origin xyz="12.023 -8.989 4.8305" rpy="-1.570796 0 1.570796" />
+       <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/us_lab.dae"/>
++        <mesh filename="package://astrobee_iss/meshes/target6.dae"/>
+       </geometry>
+     </visual>
+-    <collision name="iss_us_lab_collision">
+-      <origin xyz="6.3085472  0.0064770 4.8508920" rpy="3.1415 0 0" />
++    <!-- QR -->
++    <visual name="qr">
++      <!-- Bay6 Overhead -->
++      <origin xyz="11.381944 -8.566172 3.76203" rpy="0 0 -1.570796" />
+       <geometry>
+-        <mesh filename="package://astrobee_iss/meshes/us_lab.dae"/>
++        <mesh filename="package://astrobee_iss/meshes/qr.dae"/>
+       </geometry>
+-      <gazebo>
+-        <surface>
+-          <contact>
+-            <collide_bitmask>0x01</collide_bitmask>
+-          </contact>
+-        </surface>
+-      </gazebo>
+-    </collision>
++    </visual>
+   </link>
+   <gazebo>
+     <static>true</static>

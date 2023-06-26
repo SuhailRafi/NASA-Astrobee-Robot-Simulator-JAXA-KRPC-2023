@@ -1,0 +1,75 @@
+Index: worlds/iss.world
+===================================================================
+--- worlds.orig/iss.world
++++ worlds/iss.world
+@@ -53,8 +53,8 @@
+ 
+     <light name='user_point_light_px' type='point'>
+       <pose frame=''>30 0 0 0 -0 0</pose>
+-      <diffuse>0.5 0.5 0.5 1</diffuse>
+-      <specular>0.1 0.1 0.1 1</specular>
++      <diffuse>0.1 0.1 0.1 0.05</diffuse>
++      <specular>0.1 0.1 0.1 0.05</specular>
+       <attenuation>
+         <range>100</range>
+         <constant>0.1</constant>
+@@ -66,8 +66,8 @@
+     </light>
+     <light name='user_point_light_nx' type='point'>
+       <pose frame=''>-30 0 0 0 -0 0</pose>
+-      <diffuse>0.5 0.5 0.5 1</diffuse>
+-      <specular>0.1 0.1 0.1 1</specular>
++      <diffuse>0.1 0.1 0.1 0.05</diffuse>
++      <specular>0.1 0.1 0.1 0.05</specular>
+       <attenuation>
+         <range>100</range>
+         <constant>0.1</constant>
+@@ -79,8 +79,8 @@
+     </light>
+     <light name='user_point_light_py' type='point'>
+       <pose frame=''>0 30 0 0 -0 0</pose>
+-      <diffuse>0.5 0.5 0.5 1</diffuse>
+-      <specular>0.1 0.1 0.1 1</specular>
++      <diffuse>0.1 0.1 0.1 0.05</diffuse>
++      <specular>0.1 0.1 0.1 0.05</specular>
+       <attenuation>
+         <range>100</range>
+         <constant>0.1</constant>
+@@ -92,8 +92,8 @@
+     </light>
+     <light name='user_point_light_ny' type='point'>
+       <pose frame=''>0 -30 0 0 -0 0</pose>
+-      <diffuse>0.5 0.5 0.5 1</diffuse>
+-      <specular>0.1 0.1 0.1 1</specular>
++      <diffuse>0.1 0.1 0.1 0.05</diffuse>
++      <specular>0.1 0.1 0.1 0.05</specular>
+       <attenuation>
+         <range>100</range>
+         <constant>0.1</constant>
+@@ -105,8 +105,8 @@
+     </light>
+     <light name='user_point_light_pz' type='point'>
+       <pose frame=''>0 0 30 0 -0 0</pose>
+-      <diffuse>0.5 0.5 0.5 1</diffuse>
+-      <specular>0.1 0.1 0.1 1</specular>
++      <diffuse>0.1 0.1 0.1 0.05</diffuse>
++      <specular>0.1 0.1 0.1 0.05</specular>
+       <attenuation>
+         <range>100</range>
+         <constant>0.1</constant>
+@@ -118,8 +118,8 @@
+     </light>
+     <light name='user_point_light_nz' type='point'>
+       <pose frame=''>0 0 -30 0 -0 0</pose>
+-      <diffuse>0.5 0.5 0.5 1</diffuse>
+-      <specular>0.1 0.1 0.1 1</specular>
++      <diffuse>0.1 0.1 0.1 0.05</diffuse>
++      <specular>0.1 0.1 0.1 0.05</specular>
+       <attenuation>
+         <range>100</range>
+         <constant>0.1</constant>
+@@ -132,3 +132,4 @@
+     <plugin name="plugin_speed" filename="libgazebo_world_plugin_speed.so"/>
+   </world>
+ </sdf>
++

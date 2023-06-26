@@ -1,0 +1,23 @@
+@startuml
+
+title Every Astrobee Nodes groupped by Manager
+
+'!define HLP_NODE
+'!define MLP_NODE
+'!define LLP_NODE
+
+!define SHOW_HLP
+!define SHOW_MLP
+!define SHOW_LLP
+!define SHOW_MANAGERS
+!define SHOW_ALL_TYPES
+!define SHOW_EVERY_NODE
+
+'left to right direction
+
+!include "nodes.puml"
+
+HLP ----[hidden]down--> MLP
+MLP ----[hidden]down--> LLP
+
+@enduml

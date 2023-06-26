@@ -1,0 +1,85 @@
+Index: ./astrobee/src/astrobee/scripts/docker/astrobee_base.Dockerfile
+===================================================================
+--- ./astrobee/src/astrobee/scripts/docker/astrobee_base.Dockerfile
++++ ./astrobee/src/astrobee/scripts/docker/astrobee_base.Dockerfile.new
+@@ -4,16 +4,38 @@
+ # but it doesn't copy or build the entire code.
+ # You must set the docker context to be the repository root directory
+ 
+-ARG UBUNTU_VERSION=16.04
+-FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu$UBUNTU_VERSION
+-
+-ARG ROS_VERSION=kinetic
+-ARG PYTHON=''
++ARG UBUNTU_VERSION=20.04
++ARG ROS_VERSION=noetic
++ARG PYTHON='3'
++ARG http_proxy
++ARG https_proxy
++ARG HTTP_PROXY
++ARG HTTPS_PROXY
++ARG baseImage
++FROM ${baseImage:-nvidia/opengl:1.0-glvnd-runtime-ubuntu$UBUNTU_VERSION}
++ARG ROS_VERSION
++ARG PYTHON
++ARG http_proxy
++ARG https_proxy
++ARG HTTP_PROXY
++ARG HTTPS_PROXY
+ 
+ # try to suppress certain warnings during apt-get calls
+ ARG DEBIAN_FRONTEND=noninteractive
+ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+ 
++RUN { \
++    echo 'Acquire::http:proxy "'${http_proxy}'";'; \
++    echo 'Acquire::https:proxy "'${https_proxy}'";'; \
++    } | tee /etc/apt/apt.conf
++
++RUN apt-get update && apt-get install -y gnupg vim iputils-ping net-tools
++RUN if [ "${http_proxy}" = "" ]; then \
++        apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654; \
++    else \
++        apt-key adv --keyserver keyserver.ubuntu.com --keyserver-options http-proxy=${http_proxy} --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654; \
++    fi;
++
+ # install of apt-utils suppresses bogus warnings later
+ RUN apt-get update \
+   && apt-get install -y apt-utils 2>&1 | grep -v "debconf: delaying package configuration, since apt-utils is not installed" \
+@@ -25,9 +43,6 @@ RUN apt-get update \
+   wget \
+   && rm -rf /var/lib/apt/lists/*
+ 
+-# suppress detached head warnings later
+-RUN git config --global advice.detachedHead false
+-
+ # Install ROS --------------------------------------------------------------------
+ COPY ./scripts/setup/*.sh /setup/astrobee/
+ 
+@@ -44,7 +59,17 @@ RUN apt-get update \
+ 
+ # Install Astrobee----------------------------------------------------------------
+ COPY ./scripts/setup/debians /setup/astrobee/debians
++RUN sed -i "s;<HTTP_PROXY>;$http_proxy;g" /setup/astrobee/debians/opencv/patches/OpenCVDownload.patch \
++  && sed -i "s;<HTTPS_PROXY>;$https_proxy;g" /setup/astrobee/debians/opencv/patches/OpenCVDownload.patch
+ 
++RUN if [ "${http_proxy}" != "" ]; then \
++      export http_proxy=$http_proxy; \
++      export HTTP_PROXY=$HTTP_PROXY; \
++    fi; \
++    if [ "${https_proxy}" != "" ]; then \
++      export https_proxy=$https_proxy; \
++      export HTTPS_PROXY=$HTTPS_PROXY; \
++    fi; 
+ RUN apt-get update \
+   && /setup/astrobee/debians/build_install_debians.sh \
+   && rm -rf /var/lib/apt/lists/* \
+@@ -60,3 +81,8 @@ RUN echo "#!/bin/bash\nset -e\n\nsource
+   chmod +x /astrobee_init.sh && \
++   if [ "${https_proxy}" = "" ]; then \
++     unset https_proxy; \
++     unset HTTPS_PROXY; \
++   fi; \
+   rosdep init && \
+   rosdep update 2>&1 | egrep -v 'as root|fix-permissions'
++

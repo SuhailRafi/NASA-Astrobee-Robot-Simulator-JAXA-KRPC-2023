@@ -1,0 +1,275 @@
+{
+    "phases_info": [
+        [
+            {
+                "phase_number": 1,
+                "target_id": 1,
+                "active": false
+            },
+            {
+                "target_id": 2,
+                "active": true
+            },
+            {
+                "target_id": 3,
+                "active": false
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": true
+            }
+        ],
+        [
+            {
+                "phase_number": 2,
+                "target_id": 1,
+                "active": false
+            },
+            {
+                "target_id": 2,
+                "active": false
+            },
+            {
+                "target_id": 3,
+                "active": true
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": true
+            },
+            {
+                "target_id": 6,
+                "active": false
+            }
+        ],
+        [
+            {
+                "phase_number": 3,
+                "target_id": 1,
+                "active": true
+            },
+            {
+                "target_id": 2,
+                "active": true
+            },
+            {
+                "target_id": 3,
+                "active": false
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": false
+            }
+        ],
+        [
+            {
+                "phase_number": 4,
+                "target_id": 1,
+                "active": false
+            },
+            {
+                "target_id": 2,
+                "active": false
+            },
+            {
+                "target_id": 3,
+                "active": true
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": true
+            }
+        ],
+        [
+            {
+                "phase_number": 5,
+                "target_id": 1,
+                "active": false
+            },
+            {
+                "target_id": 2,
+                "active": false
+            },
+            {
+                "target_id": 3,
+                "active": false
+            },
+            {
+                "target_id": 4,
+                "active": true
+            },
+            {
+                "target_id": 5,
+                "active": true
+            },
+            {
+                "target_id": 6,
+                "active": false
+            }
+        ],
+        [
+            {
+                "phase_number": 6,
+                "target_id": 1,
+                "active": true
+            },
+            {
+                "target_id": 2,
+                "active": false
+            },
+            {
+                "target_id": 3,
+                "active": true
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": false
+            }
+        ],
+        [
+            {
+                "phase_number": 7,
+                "target_id": 1,
+                "active": false
+            },
+            {
+                "target_id": 2,
+                "active": true
+            },
+            {
+                "target_id": 3,
+                "active": false
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": true
+            }
+        ],
+        [
+            {
+                "phase_number": 8,
+                "target_id": 1,
+                "active": true
+            },
+            {
+                "target_id": 2,
+                "active": false
+            },
+            {
+                "target_id": 3,
+                "active": true
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": false
+            }
+        ],
+        [
+            {
+                "phase_number": 9,
+                "target_id": 1,
+                "active": false
+            },
+            {
+                "target_id": 2,
+                "active": false
+            },
+            {
+                "target_id": 3,
+                "active": false
+            },
+            {
+                "target_id": 4,
+                "active": true
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": false
+            }
+        ],
+        [
+            {
+                "phase_number": 10,
+                "target_id": 1,
+                "active": false
+            },
+            {
+                "target_id": 2,
+                "active": false
+            },
+            {
+                "target_id": 3,
+                "active": false
+            },
+            {
+                "target_id": 4,
+                "active": false
+            },
+            {
+                "target_id": 5,
+                "active": false
+            },
+            {
+                "target_id": 6,
+                "active": true
+            }
+        ]
+    ],
+    "qr_info": ""
+}

@@ -1,0 +1,11 @@
+--- ./src/astrobee/mobility/choreographer/src/validator.cc	2021-06-01 23:32:11.590300404 +0900
++++ ./src/astrobee/mobility/choreographer/src/validator.cc.new	2021-06-01 23:33:01.958298697 +0900
+@@ -138,7 +138,7 @@ void Validator::PublishMarkers() {
+   for (it = zones_.zones.begin(); it != zones_.zones.end(); it++) {
+     switch (it->type) {
+     case ff_msgs::Zone::KEEPOUT:
+-      marker.color.a = 0.1;
++      marker.color.a = 0.3;
+       marker.color.r = 1.0;
+       marker.color.g = 0.0;
+       marker.color.b = 0.0;
